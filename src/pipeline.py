@@ -51,7 +51,6 @@ def pipeline(numeric_features = False,
                                          base_transformer)])
     
     else:
-        print('function failed')
         base_pipeline = Pipeline(steps = [])
     
     return base_pipeline
