@@ -1,12 +1,11 @@
 from sklearn.preprocessing import StandardScaler, OneHotEncoder, LabelEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
-from sklearn.base import clone
 from sklearn.impute import SimpleImputer
 
-def pipeline(numeric_features = False, 
-             numeric_feature_names = [],
-             cat_features = False,
+def pipeline(numeric_features = False,      \
+             numeric_feature_names = [],    \
+             cat_features = False,          \
              cat_feature_names = []):
     """
     The function takes names of numeric and categorical features
