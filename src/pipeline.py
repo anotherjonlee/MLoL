@@ -1,3 +1,22 @@
+def feature_separator(df):
+    """
+    The function takes a dataframe and separates its columns into
+    lists of numeric and categorical columns
+    
+    input:  pandas dataframe
+    output: a list of numeric columns and 
+            a list of categorical columns
+    """
+    numeric_features = []
+    cat_features = []
+
+    for col in df.columns[3:]:
+        if df[col].dtype == 'int64':
+            numeric_features.append(col)
+        else:
+            cat_features.append(col)
+    return numeric_features,cat_features
+
 def pipeline(numeric_features = False, 
              numeric_feature_names = [],
              cat_features = False,
