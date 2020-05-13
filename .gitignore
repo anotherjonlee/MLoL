@@ -132,3 +132,4 @@ dmypy.json
 
 # misc.
 LoLTryout.ipynb
+.DS_Store
