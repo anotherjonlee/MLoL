@@ -25,7 +25,7 @@ def pairplot_helper(df):
     import matplotlib.pyplot as plt
     import seaborn as sns
         
-    sns.pairplot(df, hue = 'teams')
+    sns.pairplot(df)
     plt.show()
     
 def correlation_plotter(ax,df):
