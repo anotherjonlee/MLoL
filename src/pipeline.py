@@ -9,12 +9,17 @@ def feature_separator(df):
     """
     numeric_features = []
     cat_features = []
-
-    for col in df.columns:
-        if df[col].dtype == 'int64':
+    
+    cols = df.columns
+    
+    for idx, col in enumerate(cols):
+        
+        if df[col].dtype == 'int64' and idx >= 7:
             numeric_features.append(col)
-        else:
+        
+        elif df[col].dtype != 'int64':
             cat_features.append(col)
+        
     return numeric_features,cat_features
 
 def pipeline(numeric_features = False, 
@@ -54,7 +59,6 @@ def pipeline(numeric_features = False,
         else:
             num_processor = Pipeline(steps=[
                 ('num_imputer',SimpleImputer(strategy='mean')),
-                ('scaler',StandardScaler())
             ])
         # Append the numeric pipeline to the base_transformer
         base_transformer.transformers.append(('numeric',
@@ -130,6 +134,7 @@ def weight_explainer(estimator, num_features, cat_features = None):
         num_features.extend(onehot_cols)
     else:
         pass
+
     
     return eli5.explain_weights(estimator.named_steps['estimator'],
                                 top=20,

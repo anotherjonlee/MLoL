@@ -67,26 +67,28 @@ def box_plot(ax, df, x, y, hue_var = None):
                          orient = 'h')
     plt.show()
     
-def roc_auc_plot(ax, estimators, X_train, y_train, X_test, y_test,**kwargs):
+def roc_auc_plot(ax, estimators, X, y):
     '''
     Input:  plt.subplots object (ax),
             list of estimators (dictionary),
-            X_train,X_test,y_train,y_test (array)
+            X_train,X_test,y_train,y_test (lists)
     
     Output: plot of ROC AUC curves
     '''
-    
-    import matplotlib.pyplot as plt
-    plt.style.use('ggplot')
     from sklearn.metrics import plot_roc_curve
+    from sklearn.model_selection import train_test_split
+    import matplotlib.pyplot as plt
     
+    plt.style.use('ggplot')
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+
     for name, estimator in estimators.items():
         plot_roc_curve(estimator.fit(X_train,y_train),
                        X_test,
                        y_test,
                        alpha = 0.7,
                        ax = ax,
-                       name = name,
-                       **kwargs)
+                       name = name)
     ax.set_title('ROC AUC Curves',fontsize=20)
     plt.show()
