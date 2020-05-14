@@ -10,7 +10,7 @@ def feature_separator(df):
     numeric_features = []
     cat_features = []
 
-    for col in df.columns[3:]:
+    for col in df.columns:
         if df[col].dtype == 'int64':
             numeric_features.append(col)
         else:
@@ -20,7 +20,8 @@ def feature_separator(df):
 def pipeline(numeric_features = False, 
              numeric_feature_names = [],
              cat_features = False,
-             cat_feature_names = []):
+             cat_feature_names = [],
+             normalize = True):
     """
     The function takes names of numeric and categorical features
     from a dataframe and transform the dataframe and builds a 
@@ -42,11 +43,19 @@ def pipeline(numeric_features = False,
 
     if numeric_features == True:
         # Numeric features pipeline
-        num_processor = Pipeline(steps=[
-            ('num_imputer',SimpleImputer(strategy='mean')),
-            ('scaler',StandardScaler())
-        ])
         
+        # Scale and normalize numeric values
+        if normalize == True:
+            num_processor = Pipeline(steps=[
+                ('num_imputer',SimpleImputer(strategy='mean')),
+                ('scaler',StandardScaler())
+            ])
+        
+        else:
+            num_processor = Pipeline(steps=[
+                ('num_imputer',SimpleImputer(strategy='mean')),
+                ('scaler',StandardScaler())
+            ])
         # Append the numeric pipeline to the base_transformer
         base_transformer.transformers.append(('numeric',
                                               num_processor,
@@ -88,3 +97,20 @@ def append_model(estimator,base_pipeline):
     pipeline.steps.append(('estimator', estimator))
     
     return pipeline
+
+def model_scorer(estimators,X_train,y_train,X_test,y_test):
+    """
+    input:  estimators (dictionary)
+    output: print scores
+    """
+    from sklearn.metrics import precision_score, recall_score
+    from sklearn.model_selection import cross_val_score
+    
+    for name, estimator in estimators.items():
+        
+        pred = estimator.fit(X_train,y_train).predict(X_test)
+    
+        print(f'Mean cross validatin score for {name}: {cross_val_score(estimator,X_train,y_train).mean():.2f}')
+        print(f'Precision score for {name}: {precision_score(y_test, pred):.2f}')
+        print(f'Recall score for {name}: {recall_score(y_test, pred):.2f}')
+        print('\n')
