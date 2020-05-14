@@ -25,10 +25,10 @@ def general_correlation_plot(df):
     import matplotlib.pyplot as plt
     import seaborn as sns
         
-    sns.pairplot(df, corner = True, hue = 'teams')
+    sns.pairplot(df, hue = 'teams')
     plt.show()
     
-def granular_correlation_plot(ax,df, var1, var2, var3 = None):
+def granular_correlation_plot(ax,df, var1, var2):
     
     """
     input:  a plt.subplot object, a pandas dataframe, feature names (string)
@@ -39,19 +39,10 @@ def granular_correlation_plot(ax,df, var1, var2, var3 = None):
     import seaborn as sns
     plt.style.use('ggplot')
     
-    if var3 == None:
-        ax = sns.pairplot(df,
-                        corner = True,
-                        hue = 'teams',
-                        vars=[var1, var2])
-        plt.show()
-    
-    else:
-        ax = sns.pairplot(df,
-                        corner = True,
-                        hue = 'teams',
-                        vars=[var1, var2, var3])
-        plt.show()
+    ax = sns.pairplot(df,
+                    hue = 'teams',
+                    vars=[var1, var2, var3])
+    plt.show()
         
 def box_plot(ax, df, x, y, hue_var = None):
     """
