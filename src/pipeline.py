@@ -32,9 +32,8 @@ def pipeline(numeric_features = False,
     from a dataframe and transform the dataframe and builds a 
     base pipeline for any estimators.
     
-    input:  numeric features in df (bool)
-            categorical features in df (bool)
-            **kargs ({'num_features': (list),'cat_features':(list)})   
+    input:  numeric features in df: bool
+            categorical features in df: bool
     
     output: Pipeline object with imputed and scaled numeric features
             and imputed and one hot encoded categorical features      
@@ -89,9 +88,7 @@ def pipeline(numeric_features = False,
 
 def append_model(estimator,base_pipeline):
     """
-    input:  machine learning estimator method, 
-            pipeline object
-    
+    input:  machine learning estimator object
     output: pipeline object with an appended estimator
     """
     
@@ -104,7 +101,7 @@ def append_model(estimator,base_pipeline):
 
 def model_scorer(estimators,X_train,y_train,X_test,y_test):
     """
-    input:  estimators (dictionary)
+    input:  estimators: dictionary
     output: print scores
     """
     from sklearn.metrics import precision_score, recall_score
@@ -119,12 +116,13 @@ def model_scorer(estimators,X_train,y_train,X_test,y_test):
         print(f'Recall score for {name}: {recall_score(y_test, pred):.2f}')
         print('\n')
 
-def weight_explainer(estimator, num_features, cat_features = None):
+def weight_explainer(estimator, num_features, cat_features = None, remainders = None):
     """
-    Input:  an estimator (a pipeline object)
-    Output: feature coefficients/weights 
+    input:  a pipeline object
+    output: feature coefficients/weights 
     """
     import eli5
+    
     if cat_features != None:
         onehot_cols = list(estimator.named_steps['transformer']\
                            .named_transformers_['categorical']\
@@ -132,10 +130,28 @@ def weight_explainer(estimator, num_features, cat_features = None):
                            .get_feature_names())
         
         num_features.extend(onehot_cols)
+
+    elif remainders != None:
+        num_features.extend(remainders)
+
     else:
         pass
 
-    
     return eli5.explain_weights(estimator.named_steps['estimator'],
                                 top=20,
                                 feature_names=num_features)
+
+def param_tuner(estimator, params, X, y):
+    """
+    input: pipeline object, 
+            params: dictionary
+            X,y: arrays
+    output: pipeline object with the best hyperparameters
+    """
+    from sklearn.model_selection import GridSearchCV
+    
+    search = GridSearchCV(estimator,params,n_jobs=-1,verbose=1)
+    search.fit(X,y)
+    print(f'Best hyperparameters: {search.best_params_}')
+    
+    return search.best_estimator_
