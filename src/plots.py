@@ -8,7 +8,6 @@ def plot_cm(ax, estimator, X_test, y_test):
     from sklearn.metrics import plot_confusion_matrix
     import matplotlib.pyplot as plt
     import seaborn as sns
-    %matplotlib inline
     plt.style.use('ggplot')
 
     disp = plot_confusion_matrix(classifier, X_test, y_test,
@@ -26,7 +25,6 @@ def general_correlation_plot(ax,df):
     
     import matplotlib.pyplot as plt
     import seaborn as sns
-    %matplotlib inline
     plt.style.use('ggplot')
     
     ax = sns.pairplot(df,
@@ -43,7 +41,6 @@ def granular_correlation_plot(ax,df, var1, var2, var3 = None):
     
     import matplotlib.pyplot as plt
     import seaborn as sns
-    %matplotlib inline
     plt.style.use('ggplot')
     
     if var3 == None:
