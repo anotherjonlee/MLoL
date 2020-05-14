@@ -122,7 +122,11 @@ def weight_explainer(estimator, num_features, cat_features = None):
     """
     import eli5
     if cat_features != None:
-        onehot_cols = list(estimator.named_steps['transformer'].named_transformers_['categorical'].named_steps['encoder'].get_feature_names())
+        onehot_cols = list(estimator.named_steps['transformer']\
+                           .named_transformers_['categorical']\
+                           .named_steps['encoder']\
+                           .get_feature_names())
+        
         num_features.extend(onehot_cols)
     else:
         pass
