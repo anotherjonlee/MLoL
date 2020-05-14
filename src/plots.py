@@ -10,10 +10,9 @@ def plot_cm(ax, estimator, X_test, y_test):
     import seaborn as sns
     plt.style.use('ggplot')
 
-    ax = plot_confusion_matrix(classifier, X_test, y_test,
-                                display_labels=class_names,
-                                cmap=plt.cm.Blues,
-                                normalize=normalize)
+    ax = plot_confusion_matrix(estimator, 
+                                X_test, 
+                                y_test)
     plt.show()
     
 def general_correlation_plot(df):
@@ -25,11 +24,8 @@ def general_correlation_plot(df):
     
     import matplotlib.pyplot as plt
     import seaborn as sns
-    plt.style.use('ggplot')
-    
-    hue = {'red':'red','blue':'blue'}
-    
-    sns.pairplot(df,corner = True,hue = hue)
+        
+    sns.pairplot(df, corner = True, hue = 'teams')
     plt.show()
     
 def granular_correlation_plot(ax,df, var1, var2, var3 = None):
@@ -78,43 +74,26 @@ def box_plot(ax, df, x, y, hue_var = None):
                          orient = 'h')
     plt.show()
     
-def roc_auc_plot(ax, estimator, df_test, X_test, y_test):
+def roc_auc_plot(ax, estimators, X_train, y_train, X_test, y_test,**kwargs):
+    '''
+    Input:  plt.subplots object (ax),
+            list of estimators (dictionary),
+            X_train,X_test,y_train,y_test (array)
+    
+    Output: plot of ROC AUC curves
+    '''
+    
     import matplotlib.pyplot as plt
-    import seaborn as sns
     plt.style.use('ggplot')
-    from sklearn.metrics import RocCurveDisplay, auc, roc, roc_curve
+    from sklearn.metrics import plot_roc_curve
     
-    y_score = estimator.decision_function(X_test)
-
-    fpr, tpr, _ = roc_curve(y_test, y_score, pos_label=estimator.classes_[1])
-    #ax = RocCurveDisplay(fpr=fpr, tpr=tpr).plot()
-    
-    fpr, tpr, thresholds = metrics.roc_curve(y, pred)
-    
-    roc_auc = metrics.auc(fpr, tpr)
-    
-    ax = metrics.RocCurveDisplay(fpr=fpr, tpr=tpr, 
-                                      roc_auc=roc_auc, 
-                                      estimator_name='example estimator')
-    """ax.plot(fpr, 
-            tpr, 
-            color='darkred',
-            lw=lw, 
-            label='ROC curve (area = %0.2f)' % roc_auc_rf)"""
-    
-    ax.plot([0, 1], [0, 1], 
-             color='navy', 
-             lw=lw, 
-             linestyle='--')
-    
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
-    
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    
-    plt.title('ROC-AUC')
-    plt.legend(bbox_to_anchor=(1.05,1),loc=2,borderaxespad=0)
-    #plt.legend(loc="lower right")
+    for name, estimator in estimators.items():
+        plot_roc_curve(estimator.fit(X_train,y_train),
+                       X_test,
+                       y_test,
+                       alpha = 0.7,
+                       ax = ax,
+                       name = name,
+                       **kwargs)
+    ax.set_title('ROC AUC Curves',fontsize=20)
     plt.show()
-    

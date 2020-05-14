@@ -1,13 +1,11 @@
 import sys
-sys.path.append("..")
-
+sys.path.append("..") ## resetting the path to the parent directory
 import src.key_reader as kr
 api_key = kr.key()
 
- 
-def halftime_team_report(api_key=api_key):
+def halftime_team_report(region = 'kr', api_key = api_key):
     """
-    input: api key (str)
+    input: API region (str), api key (str)
     output: csv file saved in the data folder
     """
     
@@ -15,7 +13,7 @@ def halftime_team_report(api_key=api_key):
     import requests
     from pathlib import Path
     import pandas as pd
-    
+    import json
     """
     CALL LIMITS FOR RIOT GAMES API
 
@@ -40,8 +38,8 @@ def halftime_team_report(api_key=api_key):
         if n % 45 == 0:
             time.sleep(125)
             pass
-          
-        response_match = requests.get(f'https://kr.api.riotgames.com/lol/match/v4/matches/{match_id}?api_key={api_key}')
+
+        response_match = requests.get(f'https://{region}.api.riotgames.com/lol/match/v4/matches/{match_id}?api_key={api_key}')
 
         n += 1
 
@@ -114,7 +112,7 @@ def halftime_team_report(api_key=api_key):
                 print('breaking due to excessive number of pulls')
                 break
             
-            elif response_match.status_code == 504 or response_t.status_code == 503:
+            elif response_match.status_code == 504 or response_match.status_code == 503:
                 api_error_n -=1
                 time.sleep(30)
                 pass
@@ -235,12 +233,33 @@ def halftime_individual(api_key = api_key):
                 pass        
             
 def df_join(df1,df2):
-    
+    import pandas as pd
+    import numpy as np
+
     # Removing curly brackets from the match IDs
     df1['match_id'] = df1['match_id'].apply(lambda x: x[1:-1])
+    
+    # Converting the match IDs type from string to integer
+    df1['match_id'] = df1['match_id'].astype(int)
     
     df1 = df1.rename(columns = {'Unnamed: 0':'teams'})
     df2 = df2.rename(columns = {'Unnamed: 0':'teams'})
     
+    df1['teams'] = df1['teams'].astype(str)
     
+    mask = {'Win': 1, 'Fail': 0}
+    mask2 = {'0':'blue', '1': 'red'}
+    df1['win'] = df1['win'].replace(mask)
+    df1['teams'] = df1['teams'].astype(str).replace(mask2)
+    df2['teams'] = df2['teams'].astype(str).replace(mask2)
     
+    df1.drop(columns='teamId',inplace=True)
+    
+    final_df = pd.merge(df1,df2, 
+                        how= 'inner',
+                        left_on= ['match_id','teams'],
+                        right_on= ['match_id','teams'])
+    
+    final_df = final_df.drop_duplicates()
+    
+    return final_df
