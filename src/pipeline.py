@@ -21,7 +21,7 @@ def pipeline(numeric_features = False,
              numeric_feature_names = [],
              cat_features = False,
              cat_feature_names = [],
-             normalize = True):
+             scale = True):
     """
     The function takes names of numeric and categorical features
     from a dataframe and transform the dataframe and builds a 
@@ -39,13 +39,13 @@ def pipeline(numeric_features = False,
     from sklearn.compose import ColumnTransformer
     from sklearn.impute import SimpleImputer
     
-    base_transformer = ColumnTransformer(transformers=[])
+    base_transformer = ColumnTransformer(transformers=[],remainder='passthrough')
 
     if numeric_features == True:
         # Numeric features pipeline
         
         # Scale and normalize numeric values
-        if normalize == True:
+        if scale == True:
             num_processor = Pipeline(steps=[
                 ('num_imputer',SimpleImputer(strategy='mean')),
                 ('scaler',StandardScaler())
@@ -114,3 +114,19 @@ def model_scorer(estimators,X_train,y_train,X_test,y_test):
         print(f'Precision score for {name}: {precision_score(y_test, pred):.2f}')
         print(f'Recall score for {name}: {recall_score(y_test, pred):.2f}')
         print('\n')
+
+def weight_explainer(estimator, num_features, cat_features = None):
+    """
+    Input:  an estimator (a pipeline object)
+    Output: feature coefficients/weights 
+    """
+    import eli5
+    if cat_features != None:
+        onehot_cols = list(estimator.named_steps['transformer'].named_transformers_['categorical'].named_steps['encoder'].get_feature_names())
+        num_features.extend(onehot_cols)
+    else:
+        pass
+    
+    return eli5.explain_weights(estimator.named_steps['estimator'],
+                                top=20,
+                                feature_names=num_features)
