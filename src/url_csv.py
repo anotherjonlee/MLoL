@@ -4,7 +4,7 @@ sys.path.append("..")
 import src.key_reader as kr
 api_key = kr.key()
 
-
+ 
 def halftime_team_report(api_key=api_key):
     """
     input: api key (str)
