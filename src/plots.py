@@ -15,7 +15,7 @@ def plot_cm(ax, estimator, X_test, y_test):
                                 y_test)
     plt.show()
     
-def general_correlation_plot(df):
+def pairplot_helper(df):
     
     """
     input:  a plt.subplot object and a pandas dataframe
@@ -28,20 +28,22 @@ def general_correlation_plot(df):
     sns.pairplot(df, hue = 'teams')
     plt.show()
     
-def granular_correlation_plot(ax,df, var1, var2):
+def correlation_plotter(ax,df):
     
     """
-    input:  a plt.subplot object, a pandas dataframe, feature names (string)
+    input:  a plt.subplot object, a pandas dataframe
     output: a correlation plot 
     """
     
     import matplotlib.pyplot as plt
     import seaborn as sns
-    plt.style.use('ggplot')
     
-    ax = sns.pairplot(df,
-                    hue = 'teams',
-                    vars=[var1, var2, var3])
+    ax = ax = sns.heatmap(df.drop(columns = 'match_id').corr(), 
+                          cmap = 'coolwarm', 
+                          square=True)
+
+    ax.set_title('Correlation Matrix')
+    
     plt.show()
         
 def box_plot(ax, df, x, y, hue_var = None):

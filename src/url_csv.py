@@ -232,7 +232,7 @@ def halftime_individual(api_key = api_key):
                 time.sleep(30)
                 pass        
             
-def df_join(df1,df2):
+def df_join(df1,df2, convert_cat_features = True):
     import pandas as pd
     import numpy as np
 
@@ -261,5 +261,10 @@ def df_join(df1,df2):
                         right_on= ['match_id','teams'])
     
     final_df = final_df.drop_duplicates()
+    
+    if convert_cat_features == True:
+        # Converting boolean values to 1 and 0
+        boolean_cols = ['firstBlood', 'firstTower', 'firstInhibitor', 'firstBaron','firstDragon', 'firstRiftHerald']
+        final_df[boolean_cols] = 1 * final_df[boolean_cols]
     
     return final_df
