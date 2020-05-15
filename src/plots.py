@@ -80,8 +80,10 @@ def roc_auc_plot(ax, estimators, X, y):
     import matplotlib.pyplot as plt
     
     plt.style.use('ggplot')
-    
+        
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+    
+    ax.plot([0,1],[0,1],linestyle='--', lw=2, color='b')
 
     for name, estimator in estimators.items():
         plot_roc_curve(estimator.fit(X_train,y_train),
@@ -91,4 +93,4 @@ def roc_auc_plot(ax, estimators, X, y):
                        ax = ax,
                        name = name)
     ax.set_title('ROC AUC Curves',fontsize=20)
-    plt.show()
+
