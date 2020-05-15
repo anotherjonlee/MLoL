@@ -37,13 +37,18 @@ And the halftime statitics also correspond to the above finding.
 
 
 ![img_eda3](img/mean_team_stats1.png)
+
+
 ![img_eda4](img/mean_team_stats2.png)
 
 
 Many of the features used for this analysis had a linear or an exponential relationship with each other with high correlation values, indicating multicollinearity. 
+
+
 ![img_eda5](img/pairplot.png)
 
 However, only three features in this analysis, teams that destroyed the match's first tower, first inhibitor, or first baron had an effect determining the match's outcome. Additionally, predicting an outcome with classification models is generally free from multicollinearity. Thus the features' multicollinearity was not addressed for the analysis.
+
 
 ![img_eda2](img/correlation_mat.png)
 <sup><sub>Several features displaying multicollinearity</sub></sup>
@@ -58,12 +63,17 @@ To convert and manipulate data into an array of information for the machine lear
 
 Among the four models I used, the random forest performed the best and immediately took a look at the feature importances. Specifically, its AUC was the highest at 0.96 while other models closely followed at 0.95 for gradient boost, 0.94 for logistic regression and 0.92 for naive bayesian.
 
+
 ![img_analysis1](img/InitialCurves.png)
 
 <sup><sub>Default base models' performance</sub></sup>
 
 Although the inner workings of the random forest model is a black box and we cannot accurately gauge individual feature's weights or coefficients, it does give us an insight in terms of feature importances. If you refer to the figure below, it is surprising that many of the features that did not have a strong correlation to the match outcome are considered important by the random forest model.
+
+
 ![img_analysis2](img/feature_importances.png)
+
+
 <sup><sub>Feature importances from random forest</sup></sub>
 
 
@@ -75,6 +85,7 @@ The base models performed surprisingly well, and I did not expect much improveme
 The Gridsearch CV found 6 features, 200 estimators and a depth of 8 nodes to be the best out of the provided parameter ranges with a precision score of 0.91, an improvement of 0.01, and I proceed to use the tuned model against the test dataset.
 
 ![img_results](img/FinalCurves.png)
+
 <sup>Comparing base and tuned models<sub>
 
 ## Finding
